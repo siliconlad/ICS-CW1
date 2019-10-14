@@ -189,7 +189,8 @@ contain:                                    # $a1 = word
         lb      $t1, 0($a1)                 # $t1 = *word
         beq     $t0, $t1, contain_inc       # if (string == word) {jump}
                                             # else{
-        seq     $v0, $t1, newline           #   return (word == '\n')
+        lw      $t4, newline                #
+        seq     $v0, $t1, $t4               #   return (word == '\n')
         jr      $ra                         # }
 
 
