@@ -80,7 +80,7 @@ READ_LOOP:                              # do {
         addi $t0, $t0, 1                # idx += 1
         j    READ_LOOP
 END_LOOP:
-        sb   $0,  grid($t0)            # grid[idx] = '\0'
+        sb   $0,  grid($t0)             # grid[idx] = '\0'
 
         # Close the file
 
@@ -158,7 +158,7 @@ loop_end:
 #------------------------------------------------------------------
 # print_word(char *word)
 #------------------------------------------------------------------
-                                            # $a1 = word
+                                        # $a1 = word
 print_word:
         lb      $t0, 0($a1)             # $t0 = *word
 
@@ -198,7 +198,8 @@ contain_inc:
         addi    $t0, $t0, 1                 # string++
         addi    $t1, $t1, 1                 # word ++
                                             #
-        j       contain                # while(1)
+        j       contain                     # while(1)
+
 #------------------------------------------------------------------
 # strfind();
 #------------------------------------------------------------------
