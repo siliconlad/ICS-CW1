@@ -135,21 +135,21 @@ END_LOOP2:
 #------------------------------------------------------------------
 # contain(char *string, char *word)
 #------------------------------------------------------------------
-contain:                                            # $a0 = string
-                                                    # $a1 = word
-contain_loop:   lw      $t0, 0($a0)                 # $t0 = *string
-                lw      $t1, 0($a1)                 # $t1 = *word
-                beq     $t0, $t1, contain_return    # if (string == word) {jump}
-                                                    # else{
-                seq     $v0, $t1, newline           #   word == '\n'
-                jr      $ra                         #   return (word == '\n')
-                                                    # }
+                                            # $a0 = string
+contain:                                    # $a1 = word
+        lb      $t0, 0($a0)                 # $t0 = *string
+        lb      $t1, 0($a1)                 # $t1 = *word
+        beq     $t0, $t1, contain_inc       # if (string == word) {jump}
+                                            # else{
+        seq     $v0, $t1, newline           #   return (word == '\n')
+        jr      $ra                         # }
 
 
-contain_inc:    addi    $t0, $t0, 4                 # string++
-                addi    $t1, $t1, 4                 # word ++
-                                                    #
-                j       contain_loop                # while(1)
+contain_inc:
+        addi    $t0, $t0, 1                 # string++
+        addi    $t1, $t1, 1                 # word ++
+                                            #
+        j       contain                # while(1)
 
 #------------------------------------------------------------------
 # Exit, DO NOT MODIFY THIS BLOCK
