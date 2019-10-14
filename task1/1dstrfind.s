@@ -159,19 +159,21 @@ loop_end:
 #------------------------------------------------------------------
                                             # $a1 = word
 print_word:
-        lb      $t0, 0($a1)                 # $t0 = *word
+        lb      $t0, 0($a1)             # $t0 = *word
 
-        sne     $t1, $t0, newline           # $t1 = *word != '\n'
-        sne     $t2, $t0, end_of_string     # $t2 = *word != '\0'
-        and     $t3, $t1, $t2               # *word != '\n' && *word != '\0'
+        lw      $t4, newline
+        sne     $t1, $t0, $t4           # $t1 = *word != '\n'
+        lw      $t4, end_of_string
+        sne     $t2, $t0, $t4           # $t2 = *word != '\0'
+        and     $t3, $t1, $t2           # *word != '\n' && *word != '\0'
 
-        beq     $t3, $0, print_word_rtn     # if ($t3 == 0) {goto print_word_rtn}
+        beq     $t3, $0, print_word_rtn # if ($t3 == 0) {goto print_word_rtn}
 
-        addi    $a0, $t0, $0
+        addi    $a0, $t0, 0
         li      $v0, 11
-        syscall                             # print_char(*word)
+        syscall                         # print_char(*word)
 
-        addi    $a1, 1                      # word++
+        addi    $a1, $a1, 1                  # word++
         j       print_word
 
 print_word_rtn:
