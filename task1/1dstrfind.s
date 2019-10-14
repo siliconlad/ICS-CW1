@@ -224,6 +224,10 @@ str_while_loop:
         lw      $t4, end_of_string
         beq     $t1, $t4, strfind_end       # if(grid[grid_idx] == '\0') togo strfind_end
 
+        # Reset idx to 0
+        li      $s4, 0                      # idx = 0
+        la      $s0, dictionary_idx         # dictionary_idx[idx];
+
 str_for_loop:
         la      $t4, dict_num_words
         lw      $t3, 0($t4)                 # *dict_num_words
