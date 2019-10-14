@@ -22,6 +22,7 @@ grid_file_name:         .asciiz     "1dgrid.txt"
 dictionary_file_name:   .asciiz     "dictionary.txt"
 newline:                .asciiz     "\n"
 end_of_string:          .asciiz     "\0"
+no_finds:               .asciiz     "-1\n"
 
 #-------------------------------------------------------------------------
 # Global variables in memory
@@ -197,6 +198,71 @@ contain_inc:
         addi    $t1, $t1, 1                 # word ++
                                             #
         j       contain                # while(1)
+#------------------------------------------------------------------
+# strfind();
+#------------------------------------------------------------------
+
+strfind:
+        la      $s0, dictionary_idx         # idx = dictionary_idx;
+        la      $s1, grid                   # grid_idx = grid;
+        li      $s2, 0                      # word = 0;
+
+str_while_loop:
+        la      $t4, grid
+        lb      $t1, 0($t4)                 # $t1 = grid[grid_idx]
+        lw      $t4, end_of_string
+        bne     $t1, $t4, strfind_end       # grid[grid_idx] != '\0'
+
+str_for_loop:
+        la      $t4, dict_num_words
+        lw      $t3, 0($t4)                 # *dict_num_words
+        bge     $s0, $t3, str_while_loop_inc# if(idx > dict_num_words)
+
+        lw      $t2, 0($s0)                 # dictionary_idx[idx];
+
+        la      $t4, dictionary
+        add    $s2, $t4, $t2                # word = dictionary + dictionary_idx[idx];
+
+        add      $s7, $ra, $0               # Save $ra
+
+        add     $a0, $s1, $0                # $a0 = grid + grid_idx
+        add     $a1, $s2, $0                # $a1 = word
+        jal     contain                     # contain(grid + grid_idx, word)
+
+        beq     $v0, $0, str_for_loop_inc   # if (contain(grid+grid_idx, word))
+
+        add     $a0, $s1, $0
+        li      $v0, 1
+        syscall                             # print_int(grid_idx);
+
+        li      $a0, 32                     # ' ' = 32 in ascii
+        li      $v0, 11
+        syscall                             # print_char(' ');
+
+        add      $s2, $a0, $0
+        jal     print_word
+        # print_word(word);
+
+        la      $a0, newline
+        li      $v0, 11
+        syscall                             # print_char('\n');
+
+        add     $ra, $s7, $0                # Restore original $ra
+        jr      $ra                         # return;
+
+str_for_loop_inc:
+        addi    $s0, $s0, 4                 # idx++
+        j       str_for_loop
+
+str_while_loop_inc:
+        addi    $s1, $s1, 1                 # grid_idx++;
+        j       str_while_loop
+
+strfind_end:
+        la      $a0, no_finds
+        li      $v0, 4
+        syscall                             # print_string("-1\n");
+        jr  $ra                             # return to main
 
 #------------------------------------------------------------------
 # Exit, DO NOT MODIFY THIS BLOCK
