@@ -195,9 +195,9 @@ print_word_rtn:
 contain:                                    # $a1 = word
         lb      $t0, 0($a0)                 # $t0 = *string
         lb      $t1, 0($a1)                 # $t1 = *word
-        beq     $t0, $t1, contain_inc       # if (string == word) {jump}
+        beq     $t0, $t1, contain_inc       # if (string == word) {goto contain_inc}
                                             # else{
-        li      $t4, 10                     # $t4 = '\n'
+        li      $t4, 10                     #   $t4 = '\n'
         seq     $v0, $t1, $t4               #   return (word == '\n')
         jr      $ra                         # }
 
