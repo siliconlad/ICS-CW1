@@ -18,9 +18,10 @@
 # Constant strings
 #-------------------------------------------------------------------------
 
-grid_file_name:         .asciiz  "1dgrid.txt"
-dictionary_file_name:   .asciiz  "dictionary.txt"
-newline:                .asciiz  "\n"
+grid_file_name:         .asciiz     "1dgrid.txt"
+dictionary_file_name:   .asciiz     "dictionary.txt"
+newline:                .asciiz     "\n"
+end_of_string:          .asciiz     "\0"
 
 #-------------------------------------------------------------------------
 # Global variables in memory
@@ -127,10 +128,27 @@ END_LOOP2:
 # You can add your code here!
 
 #------------------------------------------------------------------
-# print_word()
+# print_word(char *word)
 #------------------------------------------------------------------
+                                            # $a1 = word
+print_word:
+        lb      $t0, 0($a1)                 # $t0 = *word
 
-# I think I can use syscall 4 (print string)
+        sne     $t1, $t0, newline           # $t1 = *word != '\n'
+        sne     $t2, $t0, end_of_string     # $t2 = *word != '\0'
+        and     $t3, $t1, $t2               # *word != '\n' && *word != '\0'
+
+        beq     $t3, $0, print_word_rtn     # if ($t3 == 0) {goto print_word_rtn}
+
+        addi    $a0, $t0, $0
+        li      $v0, 11
+        syscall                             # print_char(*word)
+
+        addi    $a1, 1                      # word++
+        j       print_word
+
+print_word_rtn:
+        jr $ra
 
 #------------------------------------------------------------------
 # contain(char *string, char *word)
