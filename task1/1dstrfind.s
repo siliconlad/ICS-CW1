@@ -20,9 +20,8 @@
 
 grid_file_name:         .asciiz     "1dgrid.txt"
 dictionary_file_name:   .asciiz     "dictionary.txt"
+.align 2
 newline:                .asciiz     "\n"
-end_of_string:          .asciiz     "\0"
-no_finds:               .asciiz     "-1\n"
 
 #-------------------------------------------------------------------------
 # Global variables in memory
@@ -33,9 +32,14 @@ grid:                   .space 33       # Maximun size of 1D grid_file + NULL
 dictionary:             .space 11001    # Maximum number of words in dictionary *
                                         # ( maximum size of each word + \n) + NULL
 # You can add your data here!
-
+.align 2
 dictionary_idx:         .space 4000
+.align 2
 dict_num_words:         .word 0
+.align 2
+end_of_string:          .asciiz     "\0"
+.align 2
+no_finds:               .asciiz     "-1\n"
 #=========================================================================
 # TEXT SEGMENT
 #=========================================================================
@@ -126,34 +130,38 @@ END_LOOP2:
 #------------------------------------------------------------------
 # End of reading file block.
 #------------------------------------------------------------------
-        la      $t0, dictionary_idx     # $t0 = dict_idx = &dictionary_idx;
-        la      $t1, dictionary         # $t1 = start_idx = &dictionary;
-        la      $t2, dictionary         # $t2 = idx = &dictionary;
+# You can add your code here!
+        la      $s0, dictionary_idx     # dictionary_idx[dict_idx];
+        la      $s1, dictionary         # dictionary[idx];
+        li      $s2, 0                  # idx = 0
+        li      $s3, 0                  # dict_idx = 0
+        li      $s4, 0                  # start_idx = 0
 
-loop:                                   # $t3 = c_input
-        lb      $t3, 0($t2)             # $t3 = dictionary[0]
-        lw      $t4, end_of_string
 
-        beq     $t3, $t4, loop_end      # if(c_input == '\0') {break;}
+loop:
+        lb      $t1, 0($s1)             # c_input = dictionary[idx]
+        lw      $t2, end_of_string      # $t2 = "\0"
 
-        lw      $t4, newline
-        bne     $t3, $t4, inc           # if(c_input != '\n')
-        sb      $t1, 0($t0)             # dictionary[dict_idx] = start_idx;
-        addi    $t0, $t0, 1             # dict_idx++;
-        addi    $t1, $t2, 1             # start_idx = idx + 1;
+        beq     $t1, $t2, loop_end      # if(c_input == '\0') {break;}
 
-inc:    addi    $t2, $t2, 1             # idx += 1;
+        lw      $t2, newline
+        bne     $t1, $t2, inc           # if(c_input != '\n')
+        sb      $s4, 0($s0)             # dictionary_idx[dict_idx] = start_idx;
+        addi    $s0, $s0, 4             # dictionary_idx[dict_idx]++
+        addi    $s3, $s3, 1             # dict_idx++;
+
+        addi    $s4, $s2, 1             # start_idx = idx + 1;
+
+inc:    addi    $s2, $s2, 1             # idx++;
+        addi    $s1, $s1, 1             # dictionary[idx]++
         j       loop
 
 
 loop_end:
         la      $t5, dict_num_words
-        sw      $t0, 0($t5)  #dict_num_words = dict_idx;
+        sw      $s3, 0($t5)  #dict_num_words = dict_idx;
         jal     strfind                 # strfind();
         j main_end                      # return 0;
-
-
-# You can add your code here!
 
 #------------------------------------------------------------------
 # print_word(char *word)
@@ -195,9 +203,8 @@ contain:                                    # $a1 = word
 
 
 contain_inc:
-        addi    $t0, $t0, 1                 # string++
-        addi    $t1, $t1, 1                 # word ++
-                                            #
+        addi    $a0, $a0, 1                 # string++
+        addi    $a1, $a1, 1                 # word++
         j       contain                     # while(1)
 
 #------------------------------------------------------------------
@@ -205,35 +212,38 @@ contain_inc:
 #------------------------------------------------------------------
 
 strfind:
-        la      $s0, dictionary_idx         # idx = dictionary_idx;
-        la      $s1, grid                   # grid_idx = grid;
+        la      $s0, dictionary_idx         # dictionary_idx[idx];
+        la      $s1, grid                   # grid[grid_idx];
         li      $s2, 0                      # word = 0;
+        la      $s3, dictionary             # $s3 = dictionary
+        li      $s4, 0                      # idx
+        li      $s5, 0                      # grid_idx
 
 str_while_loop:
-        la      $t4, grid
-        lb      $t1, 0($t4)                 # $t1 = grid[grid_idx]
+        lb      $t1, 0($s1)                 # $t1 = grid[grid_idx]
         lw      $t4, end_of_string
-        bne     $t1, $t4, strfind_end       # grid[grid_idx] != '\0'
+        beq     $t1, $t4, strfind_end       # if(grid[grid_idx] == '\0') togo strfind_end
 
 str_for_loop:
         la      $t4, dict_num_words
         lw      $t3, 0($t4)                 # *dict_num_words
-        bge     $s0, $t3, str_while_loop_inc# if(idx > dict_num_words)
+        bge     $s4, $t3, str_while_loop_inc# if(idx >= dict_num_words)
 
         lw      $t2, 0($s0)                 # dictionary_idx[idx];
 
-        la      $t4, dictionary
-        add    $s2, $t4, $t2                # word = dictionary + dictionary_idx[idx];
+        add     $s2, $s3, $t2               # word = dictionary + dictionary_idx[idx];
 
-        add      $s7, $ra, $0               # Save $ra
+        add     $s7, $ra, $0                # Save $ra
 
         add     $a0, $s1, $0                # $a0 = grid + grid_idx
         add     $a1, $s2, $0                # $a1 = word
         jal     contain                     # contain(grid + grid_idx, word)
 
+        add     $ra, $s7, $0                # Restore original $ra
+
         beq     $v0, $0, str_for_loop_inc   # if (contain(grid+grid_idx, word))
 
-        add     $a0, $s1, $0
+        add     $a0, $s5, $0
         li      $v0, 1
         syscall                             # print_int(grid_idx);
 
@@ -241,23 +251,27 @@ str_for_loop:
         li      $v0, 11
         syscall                             # print_char(' ');
 
-        add      $s2, $a0, $0
-        jal     print_word
-        # print_word(word);
+        add     $s7, $ra, $0                # Save $ra
+
+        add     $a1, $s2, $0
+        jal     print_word                  # print_word(word);
+
+        add     $ra, $s7, $0                # Restore original $ra
 
         la      $a0, newline
         li      $v0, 11
         syscall                             # print_char('\n');
 
-        add     $ra, $s7, $0                # Restore original $ra
         jr      $ra                         # return;
 
 str_for_loop_inc:
-        addi    $s0, $s0, 4                 # idx++
+        addi    $s0, $s0, 4                 # dictionary_idx += 4
+        addi    $s4, $s4, 1                 # idx++
         j       str_for_loop
 
 str_while_loop_inc:
-        addi    $s1, $s1, 1                 # grid_idx++;
+        addi    $s1, $s1, 1                 # grid++;
+        addi    $s5, $s5, 1                 # grid_idx++;
         j       str_while_loop
 
 strfind_end:
