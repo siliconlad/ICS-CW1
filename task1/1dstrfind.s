@@ -125,7 +125,32 @@ END_LOOP2:
 
 
 # You can add your code here!
- 
+
+#------------------------------------------------------------------
+# print_word()
+#------------------------------------------------------------------
+
+# I think I can use syscall 4 (print string)
+
+#------------------------------------------------------------------
+# contain(char *string, char *word)
+#------------------------------------------------------------------
+contain:                                            # $a0 = string
+                                                    # $a1 = word
+contain_loop:   lw      $t0, 0($a0)                 # $t0 = *string
+                lw      $t1, 0($a1)                 # $t1 = *word
+                beq     $t0, $t1, contain_return    # if (string == word) {jump}
+                                                    # else{
+                seq     $v0, $t1, newline           #   word == '\n'
+                jr      $ra                         #   return (word == '\n')
+                                                    # }
+
+
+contain_inc:    addi    $t0, $t0, 4                 # string++
+                addi    $t1, $t1, 4                 # word ++
+                                                    #
+                j       contain_loop                # while(1)
+
 #------------------------------------------------------------------
 # Exit, DO NOT MODIFY THIS BLOCK
 #------------------------------------------------------------------
