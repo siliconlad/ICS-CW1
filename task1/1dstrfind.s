@@ -33,6 +33,8 @@ dictionary:             .space 11001    # Maximum number of words in dictionary 
                                         # ( maximum size of each word + \n) + NULL
 # You can add your data here!
 
+dictionary_idx:         .space 4000
+dict_num_words:         .word 0
 #=========================================================================
 # TEXT SEGMENT
 #=========================================================================
@@ -123,6 +125,31 @@ END_LOOP2:
 #------------------------------------------------------------------
 # End of reading file block.
 #------------------------------------------------------------------
+        la      $t0, dictionary_idx     # $t0 = dict_idx = &dictionary_idx;
+        la      $t1, dictionary         # $t1 = start_idx = &dictionary;
+        la      $t2, dictionary         # $t2 = idx = &dictionary;
+
+loop:                                   # $t3 = c_input
+        lb      $t3, 0($t2)             # $t3 = dictionary[0]
+        lw      $t4, end_of_string
+
+        beq     $t3, $t4, loop_end      # if(c_input == '\0') {break;}
+
+        lw      $t4, newline
+        bne     $t3, $t4, inc           # if(c_input != '\n')
+        sb      $t1, 0($t0)             # dictionary[dict_idx] = start_idx;
+        addi    $t0, $t0, 1             # dict_idx++;
+        addi    $t1, $t2, 1             # start_idx = idx + 1;
+
+inc:    addi    $t2, $t2, 1             # idx += 1;
+        j       loop
+
+
+loop_end:
+        la      $t5, dict_num_words
+        sw      $t0, 0($t5)  #dict_num_words = dict_idx;
+        jal     strfind                 # strfind();
+        j main_end                      # return 0;
 
 
 # You can add your code here!
