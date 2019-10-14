@@ -140,11 +140,11 @@ END_LOOP2:
 
 loop:
         lb      $t1, 0($s1)             # c_input = dictionary[idx]
-        lw      $t2, end_of_string      # $t2 = "\0"
+        li      $t2, 0                  # $t2 = "\0"
 
         beq     $t1, $t2, loop_end      # if(c_input == '\0') {break;}
 
-        lw      $t2, newline
+        li      $t2, 10                 # $t2 = '\n'
         bne     $t1, $t2, inc           # if(c_input != '\n')
         sb      $s4, 0($s0)             # dictionary_idx[dict_idx] = start_idx;
         addi    $s0, $s0, 4             # dictionary_idx[dict_idx]++
@@ -170,9 +170,9 @@ loop_end:
 print_word:
         lb      $t0, 0($a1)             # $t0 = *word
 
-        lw      $t4, newline
+        li      $t4, 10                 # $t4 = '\n'
         sne     $t1, $t0, $t4           # $t1 = *word != '\n'
-        lw      $t4, end_of_string
+        li      $t4, 0                  # $t4 = '\0'
         sne     $t2, $t0, $t4           # $t2 = *word != '\0'
         and     $t3, $t1, $t2           # *word != '\n' && *word != '\0'
 
@@ -197,7 +197,7 @@ contain:                                    # $a1 = word
         lb      $t1, 0($a1)                 # $t1 = *word
         beq     $t0, $t1, contain_inc       # if (string == word) {jump}
                                             # else{
-        lw      $t4, newline                #
+        li      $t4, 10                     # $t4 = '\n'
         seq     $v0, $t1, $t4               #   return (word == '\n')
         jr      $ra                         # }
 
@@ -221,7 +221,7 @@ strfind:
 
 str_while_loop:
         lb      $t1, 0($s1)                 # $t1 = grid[grid_idx]
-        lw      $t4, end_of_string
+        li      $t4, 0                      # $t4 = '\0'
         beq     $t1, $t4, strfind_end       # if(grid[grid_idx] == '\0') togo strfind_end
 
         # Reset idx to 0
