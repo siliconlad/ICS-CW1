@@ -131,8 +131,8 @@ END_LOOP2:
 # End of reading file block.
 #------------------------------------------------------------------
 # You can add your code here!
-        la      $s0, dictionary_idx     # dictionary_idx[dict_idx];
-        la      $s1, dictionary         # dictionary[idx];
+        la      $s0, dictionary_idx     # &dictionary_idx[dict_idx];
+        la      $s1, dictionary         # &dictionary[idx];
         li      $s2, 0                  # idx = 0
         li      $s3, 0                  # dict_idx = 0
         li      $s4, 0                  # start_idx = 0
@@ -147,21 +147,21 @@ loop:
         li      $t2, 10                 # $t2 = '\n'
         bne     $t1, $t2, inc           # if(c_input != '\n')
         sb      $s4, 0($s0)             # dictionary_idx[dict_idx] = start_idx;
-        addi    $s0, $s0, 4             # dictionary_idx[dict_idx]++
+        addi    $s0, $s0, 4             # &dictionary_idx[dict_idx++] (int so ++ by 4 bytes)
         addi    $s3, $s3, 1             # dict_idx++;
 
         addi    $s4, $s2, 1             # start_idx = idx + 1;
 
 inc:    addi    $s2, $s2, 1             # idx++;
-        addi    $s1, $s1, 1             # dictionary[idx]++
+        addi    $s1, $s1, 1             # &dictionary[idx++]
         j       loop
 
 
 loop_end:
         la      $t5, dict_num_words
-        sw      $s3, 0($t5)  #dict_num_words = dict_idx;
+        sw      $s3, 0($t5)             # dict_num_words = dict_idx;
         jal     strfind                 # strfind();
-        j main_end                      # return 0;
+        j       main_end                # return 0;
 
 #------------------------------------------------------------------
 # print_word(char *word)
@@ -212,8 +212,8 @@ contain_inc:
 #------------------------------------------------------------------
 
 strfind:
-        la      $s0, dictionary_idx         # dictionary_idx[idx];
-        la      $s1, grid                   # grid[grid_idx];
+        la      $s0, dictionary_idx         # &dictionary_idx[idx];
+        la      $s1, grid                   # &grid[grid_idx];
         li      $s2, 0                      # word = 0;
         la      $s3, dictionary             # $s3 = dictionary
         li      $s4, 0                      # idx
@@ -226,7 +226,7 @@ str_while_loop:
 
         # Reset idx to 0
         li      $s4, 0                      # idx = 0
-        la      $s0, dictionary_idx         # dictionary_idx[idx];
+        la      $s0, dictionary_idx         # &dictionary_idx[idx];
 
 str_for_loop:
         la      $t4, dict_num_words
@@ -239,13 +239,13 @@ str_for_loop:
 
         add     $s7, $ra, $0                # Save $ra
 
-        add     $a0, $s1, $0                # $a0 = grid + grid_idx
+        add     $a0, $s1, $0                # $a0 = &grid[grid_idx]
         add     $a1, $s2, $0                # $a1 = word
-        jal     contain                     # contain(grid + grid_idx, word)
+        jal     contain                     # contain(&grid[grid_idx], word)
 
         add     $ra, $s7, $0                # Restore original $ra
 
-        beq     $v0, $0, str_for_loop_inc   # if (contain(grid+grid_idx, word))
+        beq     $v0, $0, str_for_loop_inc   # if (contain(&grid[grid_idx], word))
 
         add     $a0, $s5, $0
         li      $v0, 1
@@ -269,12 +269,12 @@ str_for_loop:
         jr      $ra                         # return;
 
 str_for_loop_inc:
-        addi    $s0, $s0, 4                 # dictionary_idx += 4
+        addi    $s0, $s0, 4                 # &dictionary_idx[idx++] (int so by 4 bytes)
         addi    $s4, $s4, 1                 # idx++
         j       str_for_loop
 
 str_while_loop_inc:
-        addi    $s1, $s1, 1                 # grid++;
+        addi    $s1, $s1, 1                 # &grid[grid_idx++]; (char so by 1 byte)
         addi    $s5, $s5, 1                 # grid_idx++;
         j       str_while_loop
 
