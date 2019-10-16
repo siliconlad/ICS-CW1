@@ -38,6 +38,7 @@ end_of_string:          .asciiz     "\0"
 no_finds:               .asciiz     "-1\n"
 no_of_rows:             .space 4
 no_of_chars_per_row:    .space 4
+found:                  .space 4
 #=========================================================================
 # TEXT SEGMENT
 #=========================================================================
@@ -210,22 +211,21 @@ contain_inc:
         j       contain                     # while(1)
 
 #------------------------------------------------------------------
-# strfind();
+# strfind(int row);
 #------------------------------------------------------------------
 
-strfind:
+strfind:                                    # $a0 = row
         la      $s0, dictionary_idx         # &dictionary_idx[idx];
         la      $s1, grid                   # &grid[grid_idx];
         li      $s2, 0                      # word = 0;
         la      $s3, dictionary             # $s3 = dictionary
         li      $s4, 0                      # idx
         li      $s5, 0                      # grid_idx
-        li      $s6, 0                      # found = 0;
 
 str_while_loop:
         lb      $t1, 0($s1)                 # $t1 = grid[grid_idx]
-        li      $t4, 0                      # $t4 = '\0'
-        beq     $t1, $t4, strfind_end       # if(grid[grid_idx] == '\0') togo strfind_end
+        li      $t4, 10                      # $t4 = '\n'
+        beq     $t1, $t4, strfind_return    # if(grid[grid_idx] == '\n') togo strfind_return
 
         # Reset idx to 0
         li      $s4, 0                      # idx = 0
@@ -242,7 +242,13 @@ str_for_loop:
 
         add     $s7, $ra, $0                # Save $ra
 
-        add     $a0, $s1, $0                # $a0 = &grid[grid_idx]
+        la      $t0, no_of_chars_per_row    # $t0 = &no_of_chars_per_row
+        lw      $t0, 0($t0)                 # $t0 = no_of_chars_per_row
+        addi    $t0, $t0, 1                 # $t0 = no_of_chars_per_row + 1
+        mul     $t0, $t0, $a0               # $t0 = row * (no_of_chars_per_row + 1)
+        add     $t0, $t0, $s1               # $t0 = $t0 + &grid[grid_idx]
+
+        add     $a0, $t0, $0                # $a0 = &grid[grid_idx]
         add     $a1, $s2, $0                # $a1 = word
         jal     contain                     # contain(&grid[grid_idx], word)
 
@@ -250,26 +256,41 @@ str_for_loop:
 
         beq     $v0, $0, str_for_loop_inc   # if (contain(&grid[grid_idx], word))
 
-        add     $a0, $s5, $0
-        li      $v0, 1
-        syscall                             # print_int(grid_idx);
+        li      $v0, 1                      # $a0 already has the value of row
+        syscall                             # print_int(row);
+
+        li      $a0, 44                     # $a0 = ','
+        li      $v0, 11                     # print_char(',')
+        syscall
+
+        addi    $a0, $s5, $zero             # $a0 = grid_idx
+        li      $v0, 1                      #
+        syscall                             # print_int(grid_idx)
 
         li      $a0, 32                     # ' ' = 32 in ascii
-        li      $v0, 11
+        li      $v0, 11                     #
+        syscall                             # print_char(' ');
+
+        li      $a0, 72                     # $a0 = 'H'
+        li      $v0, 11                     #
+        syscall                             # print_char('H');
+
+        li      $a0, 32                     # ' ' = 32 in ascii
+        li      $v0, 11                     #
         syscall                             # print_char(' ');
 
         add     $s7, $ra, $0                # Save $ra
-
-        add     $a1, $s2, $0
+        add     $a1, $s2, $0                #
         jal     print_word                  # print_word(word);
-
         add     $ra, $s7, $0                # Restore original $ra
 
-        li      $a0, 10
-        li      $v0, 11
+        li      $a0, 10                     # $a0 = '\n'
+        li      $v0, 11                     #
         syscall                             # print_char('\n');
 
-        li      $s6, 1                      # found = 1;
+        la      $t0, found                  #
+        li      $t1, 1                      #
+        sw      $t1, 0($t0)                 # found = 1;
 
 str_for_loop_inc:
         addi    $s0, $s0, 4                 # &dictionary_idx[idx++] (int so by 4 bytes)
@@ -280,13 +301,6 @@ str_while_loop_inc:
         addi    $s1, $s1, 1                 # &grid[grid_idx++]; (char so by 1 byte)
         addi    $s5, $s5, 1                 # grid_idx++;
         j       str_while_loop
-
-strfind_end:
-        bne     $s6, $zero, strfind_return  # if (!found)
-
-        la      $a0, no_finds
-        li      $v0, 4
-        syscall                             # print_string("-1\n");
 
 strfind_return:
         jr  $ra                             # return to main
