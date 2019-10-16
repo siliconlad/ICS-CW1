@@ -262,7 +262,7 @@ str_for_loop:
 
         add     $ra, $s7, $0                # Restore original $ra
 
-        la      $a0, newline
+        li      $a0, 10
         li      $v0, 11
         syscall                             # print_char('\n');
 
