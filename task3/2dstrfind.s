@@ -367,11 +367,12 @@ find_no_of_chars_per_row:
         la      $t1, grid                   # $t1 = &grid[i]
         li      $t2, 10                     # $t2 = '\n'
 
+find_no_of_chars_per_row_loop:
         lb      $t3, 0($t1)                 # $t3 = grid[i]
         addi    $t0, $t0, 1                 # i++;
         addi    $t1, $t1, 1                 # grid++;
 
-        bne     $t3, $t2, find_no_of_chars_per_row  # loop
+        bne     $t3, $t2, find_no_of_chars_per_row_loop  # loop
 
         addi    $t0, $t0, -1                # i -= 1
         add     $v0, $t0, $zero             # return i
