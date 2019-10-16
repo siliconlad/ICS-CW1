@@ -48,13 +48,67 @@ const char dictionary_file_name[] = "dictionary.txt";
 const char grid_file_name[] = "2dgrid.txt";
 // content of grid file
 char grid[(MAX_DIM_SIZE + 1 /* for \n */ ) * MAX_DIM_SIZE + 1 /* for \0 */ ];
-// content of dictionary file 
+// content of dictionary file
 char dictionary[MAX_DICTIONARY_WORDS * (MAX_WORD_SIZE + 1 /* for \n */ ) + 1 /* for \0 */ ];
 ///////////////////////////////////////////////////////////////////////////////
 /////////////// Do not modify anything above
 ///////////////Put your global variables/functions here///////////////////////
 
+// starting index of each word in the dictionary
+int dictionary_idx[MAX_DICTIONARY_WORDS];
+// number of words in the dictionary
+int dict_num_words = 0;
 
+
+// function to print found word
+void print_word(char *word)
+{
+  while(*word != '\n' && *word != '\0') {
+    print_char(*word);
+    word++;
+  }
+}
+
+// function to see if the string contains the (\n terminated) word
+int contain(char *string, char *word)
+{
+  while (1) {
+    if (*string != *word){
+      return (*word == '\n');
+    }
+
+    string++;
+    word++;
+  }
+
+  return 0;
+}
+
+// this functions finds the first match in the grid
+void strfind()
+{
+  int idx = 0;
+  int grid_idx = 0;
+  char *word;
+  int found = 0;
+  while (grid[grid_idx] != '\0') {
+    for(idx = 0; idx < dict_num_words; idx ++) {
+      word = dictionary + dictionary_idx[idx];
+      if (contain(grid + grid_idx, word)) {
+        found = 1;
+        print_int(grid_idx);
+        print_char(' ');
+        print_word(word);
+        print_char('\n');
+      }
+    }
+
+    grid_idx++;
+  }
+  if (!found) {
+    print_string("-1\n");
+  }
+}
 
 //---------------------------------------------------------------------------
 // MAIN function
@@ -101,7 +155,7 @@ int main (void)
   // closing the grid file
   fclose(grid_file);
   idx = 0;
-   
+
   // reading the dictionary file
   do {
     c_input = fgetc(dictionary_file);
@@ -120,6 +174,26 @@ int main (void)
   //////////////////////////End of reading////////////////////////
   ///////////////You can add your code here!//////////////////////
 
+  int dict_idx = 0;
+  int start_idx = 0;
+
+  // storing the starting index of each word in the dictionary
+  idx = 0;
+  do {
+    c_input = dictionary[idx];
+    if(c_input == '\0') {
+      break;
+    }
+    if(c_input == '\n') {
+      dictionary_idx[dict_idx ++] = start_idx;
+      start_idx = idx + 1;
+    }
+    idx += 1;
+  } while (1);
+
+  dict_num_words = dict_idx;
+
+  strfind();
 
   return 0;
 }
