@@ -20,7 +20,6 @@
 
 grid_file_name:         .asciiz     "1dgrid.txt"
 dictionary_file_name:   .asciiz     "dictionary.txt"
-.align 2
 newline:                .asciiz     "\n"
 
 #-------------------------------------------------------------------------
@@ -34,11 +33,8 @@ dictionary:             .space 11001    # Maximum number of words in dictionary 
 # You can add your data here!
 .align 2
 dictionary_idx:         .space 4000
-.align 2
 dict_num_words:         .word 0
-.align 2
 end_of_string:          .asciiz     "\0"
-.align 2
 no_finds:               .asciiz     "-1\n"
 #=========================================================================
 # TEXT SEGMENT
