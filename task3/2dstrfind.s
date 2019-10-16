@@ -162,7 +162,7 @@ loop_end:
         la      $t1, no_of_rows
         sw      $v0, 0($t1)             # no_of_rows = find_no_of_rows();
 
-        jal     find_no_of_chars_per_row(); # find_no_of_chars_per_row();
+        jal     find_no_of_chars_per_row# find_no_of_chars_per_row();
         la      $t1, no_of_chars_per_row
         sw      $v0, 0($t1)             # no_of_chars_per_row = find_no_of_chars_per_row();
 
@@ -294,7 +294,7 @@ str_for_loop:
         li      $v0, 11                     # print_char(',')
         syscall
 
-        addi    $a0, $s5, $zero             # $a0 = grid_idx
+        add    $a0, $s5, $zero              # $a0 = grid_idx
         li      $v0, 1                      #
         syscall                             # print_int(grid_idx)
 
