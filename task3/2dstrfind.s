@@ -39,6 +39,7 @@ no_finds:               .asciiz     "-1\n"
 no_of_rows:             .word 0
 no_of_chars_per_row:    .word 0
 found:                  .word 0
+main_index:             .word 0
 #=========================================================================
 # TEXT SEGMENT
 #=========================================================================
@@ -166,17 +167,23 @@ loop_end:
         la      $t1, no_of_chars_per_row
         sw      $v0, 0($t1)             # no_of_chars_per_row = find_no_of_chars_per_row();
 
-        # The reason $s6 is used is because strfind uses registers $s0-s5 and $s7.
-        li      $s6, 0                  # i = 0;
+# We use $t0 to temporarily store the index of the for loop. We then store it in memory pointed to by main_index when strfind is called.
+        li      $t0, 0                  # i = 0
 main_for_loop:
-        la      $t0, no_of_rows         # $t0 = &no_of_rows
-        lw      $t0, 0($t0)             # $t0 = no_of_rows
-        bge     $s6, $t0, main_for_loop_end
+        la      $t1, no_of_rows         # $t1 = &no_of_rows
+        lw      $t1, 0($t1)             # $t1 = no_of_rows
+        bge     $t0, $t1, main_for_loop_end
 
-        add     $a0, $s6, $zero
+        # The reason we store the index value is because strfind uses all registers $s0-s7. Hence we will lose the index otherwise
+        la      $t2, main_index
+        sw      $t0, 0($t2)
+
+        add     $a0, $t0, $zero         #
         jal     strfind                 # strfind(i);
 
-        addi    $s6, $s6, 1             # i++;
+        la      $t0, main_index
+        lw      $t0, 0($t0)
+        addi    $t0, $t0, 1             # i++;
         j       main_for_loop
 
 
