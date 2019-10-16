@@ -60,6 +60,7 @@ int dictionary_idx[MAX_DICTIONARY_WORDS];
 int dict_num_words = 0;
 int no_of_rows = 0;
 int no_of_chars_per_row = 0;
+int found = 0;
 
 //---------------------------------------------------------------------------
 // PRINT_WORD function
@@ -98,23 +99,31 @@ int contain(char *string, char *word)
 //---------------------------------------------------------------------------
 
 // this functions finds all matches in the grid
-void strfind()
+void strfind(int row)
 {
-  int idx = 0;
-  int grid_idx = 0;
-  char *word;
-  int found = 0;
-  while (grid[grid_idx] != '\0') {
-    for(idx = 0; idx < dict_num_words; idx ++) {
-      word = dictionary + dictionary_idx[idx];
-      if (contain(grid + grid_idx, word)) {
-        found = 1;
-        print_int(grid_idx);
-        print_char(' ');
-        print_word(word);
-        print_char('\n');
-      }
+    int idx = 0;
+    int grid_idx = 0;
+    char *word;
+    while (grid[grid_idx] != '\n') {
+        for(idx = 0; idx < dict_num_words; idx ++) {
+            word = dictionary + dictionary_idx[idx];
+            if (contain(grid + row*(no_of_chars_per_row+1) + grid_idx, word)) {
+                found = 1;
+                print_int(row);
+                print_char(',');
+                print_int(grid_idx);
+                print_char(' ');
+                print_char('H');
+                print_char(' ');
+                print_word(word);
+                print_char('\n');
+            }
+        }
+
+        grid_idx++;
     }
+}
+
 //---------------------------------------------------------------------------
 // FIND_NO_OF_ROWS function
 //---------------------------------------------------------------------------
@@ -132,11 +141,6 @@ int find_no_of_rows()
     return rows;
 }
 
-    grid_idx++;
-  }
-  if (!found) {
-    print_string("-1\n");
-  }
 //---------------------------------------------------------------------------
 // FIND_NO_OF_ROWS function
 //---------------------------------------------------------------------------
@@ -232,9 +236,16 @@ int main (void)
 
   dict_num_words = dict_idx;
 
-  strfind();
     no_of_rows = find_no_of_rows();
     no_of_chars_per_row = find_no_of_chars_per_row();
+
+    for (int i = 0; i < no_of_rows; i++) {
+      strfind(i);
+    }
+
+    if (!found) {
+        print_string("-1\n");
+    }
 
   return 0;
 }
