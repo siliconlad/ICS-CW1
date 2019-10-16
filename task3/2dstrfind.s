@@ -350,7 +350,7 @@ find_no_of_rows_loop:
         addi    $t0, $t0, 1                 # &grid[i]++;
         beq     $t3, $zero, find_no_of_rows_end # if(grid[i] == 0){return rows;}
 
-        bne     $t3, $t2, find_no_of_rows   # if(grid[i] != '\n'){jump to find_no_of_rows}
+        bne     $t3, $t2, find_no_of_rows_loop   # if(grid[i] != '\n'){jump to find_no_of_rows}
         addi    $t1, $t1, 1                 # rows++;
         j       find_no_of_rows_loop
 
