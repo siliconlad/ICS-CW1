@@ -157,7 +157,38 @@ inc:
 loop_end:
         la      $t5, dict_num_words
         sw      $s3, 0($t5)             # dict_num_words = dict_idx;
-        jal     strfind                 # strfind();
+
+        jal     find_no_of_rows         # find_no_of_rows();
+        la      $t1, no_of_rows
+        sw      $v0, 0($t1)             # no_of_rows = find_no_of_rows();
+
+        jal     find_no_of_chars_per_row(); # find_no_of_chars_per_row();
+        la      $t1, no_of_chars_per_row
+        sw      $v0, 0($t1)             # no_of_chars_per_row = find_no_of_chars_per_row();
+
+        # The reason $s6 is used is because strfind uses registers $s0-s5 and $s7.
+        li      $s6, 0                  # i = 0;
+main_for_loop:
+        la      $t0, no_of_rows         # $t0 = &no_of_rows
+        lw      $t0, 0($t0)             # $t0 = no_of_rows
+        bge     $s6, $t0, main_for_loop_end
+
+        add     $a0, $s6, $zero
+        jal     strfind                 # strfind(i);
+
+        addi    $s6, $s6, 1             # i++;
+        j       main_for_loop
+
+
+main_for_loop_end:
+        la      $t1, found
+        lw      $t2, 0($t1)
+        bne     $t2, $zero, main_end    # if(found) {return 0;}
+
+        la      $a0, no_finds           # if(!found) {
+        li      $v0, 4                  # print_string("-1\n")
+        syscall                         # }
+
         j       main_end                # return 0;
 
 #------------------------------------------------------------------
