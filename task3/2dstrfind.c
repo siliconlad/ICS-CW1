@@ -82,10 +82,10 @@ void print_word(char *word)
 // function to see if the string contains the (\n terminated) word
 int contain(char *string, char *word)
 {
-  while (1) {
-    if (*string != *word){
-      return (*word == '\n');
-    }
+    while (1) {
+        if (*string != *word || (*string == '\n' && *string == '\n')){
+            return (*word == '\n');
+        }
 
     string++;
     word++;
