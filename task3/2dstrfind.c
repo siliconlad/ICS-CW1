@@ -59,6 +59,9 @@ int dictionary_idx[MAX_DICTIONARY_WORDS];
 // number of words in the dictionary
 int dict_num_words = 0;
 
+//---------------------------------------------------------------------------
+// PRINT_WORD function
+//---------------------------------------------------------------------------
 
 // function to print found word
 void print_word(char *word)
@@ -68,6 +71,10 @@ void print_word(char *word)
     word++;
   }
 }
+
+//---------------------------------------------------------------------------
+// CONTAIN function
+//---------------------------------------------------------------------------
 
 // function to see if the string contains the (\n terminated) word
 int contain(char *string, char *word)
@@ -84,7 +91,11 @@ int contain(char *string, char *word)
   return 0;
 }
 
-// this functions finds the first match in the grid
+//---------------------------------------------------------------------------
+// STRFIND function
+//---------------------------------------------------------------------------
+
+// this functions finds all matches in the grid
 void strfind()
 {
   int idx = 0;
