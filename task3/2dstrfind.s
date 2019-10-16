@@ -224,15 +224,16 @@ contain:                                    # $a1 = word
         li      $t0, 10                     # $t0 = '\n'
         lb      $t1, 0($a0)                 # $t1 = *string
         lb      $t2, 0($a1)                 # $t2 = *word
-        seq     $t3, $t1, $t2               # set $t3=1 if *string == *word
+
+        sne     $t3, $t1, $t2               # set $t3=1 if *string != *word
         seq     $t4, $t1, $t0               # set $t4=1 if *string == '\n'
         seq     $t5, $t2, $t0               # set $t5=1 if *word == '\n'
         and     $t4, $t4, $t5               # $t4 = $t4 && $t5
         or      $t3, $t3, $t4               # $t3 = $t3 || $t4
 
-        bne     $t3, $zero, contain_inc
+        beq     $t3, $zero, contain_inc
                                             # else{
-        seq     $v0, $t1, $t4               #   return (word == '\n')
+        seq     $v0, $t2, $t0               #   return (word == '\n')
         jr      $ra                         # }
 
 
