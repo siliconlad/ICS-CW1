@@ -69,10 +69,10 @@ int found = 0;
 // function to print found word
 void print_word(char *word)
 {
-  while(*word != '\n' && *word != '\0') {
-    print_char(*word);
-    word++;
-  }
+    while(*word != '\n' && *word != '\0') {
+        print_char(*word);
+        word++;
+    }
 }
 
 //---------------------------------------------------------------------------
@@ -87,11 +87,11 @@ int contain(char *string, char *word)
             return (*word == '\n');
         }
 
-    string++;
-    word++;
-  }
+        string++;
+        word++;
+    }
 
-  return 0;
+    return 0;
 }
 
 //---------------------------------------------------------------------------
@@ -160,81 +160,81 @@ int find_no_of_chars_per_row()
 int main (void)
 {
 
-  /////////////Reading dictionary and grid files//////////////
-  ///////////////Please DO NOT touch this part/////////////////
-  int c_input;
-  int idx = 0;
+    /////////////Reading dictionary and grid files//////////////
+    ///////////////Please DO NOT touch this part/////////////////
+    int c_input;
+    int idx = 0;
 
 
-  // open grid file
-  FILE *grid_file = fopen(grid_file_name, "r");
-  // open dictionary file
-  FILE *dictionary_file = fopen(dictionary_file_name, "r");
+    // open grid file
+    FILE *grid_file = fopen(grid_file_name, "r");
+    // open dictionary file
+    FILE *dictionary_file = fopen(dictionary_file_name, "r");
 
-  // if opening the grid file failed
-  if(grid_file == NULL){
-    print_string("Error in opening grid file.\n");
-    return -1;
-  }
-
-  // if opening the dictionary file failed
-  if(dictionary_file == NULL){
-    print_string("Error in opening dictionary file.\n");
-    return -1;
-  }
-  // reading the grid file
-  do {
-    c_input = fgetc(grid_file);
-    // indicates the the of file
-    if(feof(grid_file)) {
-      grid[idx] = '\0';
-      break;
+    // if opening the grid file failed
+    if(grid_file == NULL){
+        print_string("Error in opening grid file.\n");
+        return -1;
     }
-    grid[idx] = c_input;
-    idx += 1;
 
-  } while (1);
-
-  // closing the grid file
-  fclose(grid_file);
-  idx = 0;
-
-  // reading the dictionary file
-  do {
-    c_input = fgetc(dictionary_file);
-    // indicates the end of file
-    if(feof(dictionary_file)) {
-      dictionary[idx] = '\0';
-      break;
+    // if opening the dictionary file failed
+    if(dictionary_file == NULL){
+        print_string("Error in opening dictionary file.\n");
+        return -1;
     }
-    dictionary[idx] = c_input;
-    idx += 1;
-  } while (1);
+    // reading the grid file
+    do {
+        c_input = fgetc(grid_file);
+        // indicates the the of file
+        if(feof(grid_file)) {
+            grid[idx] = '\0';
+            break;
+        }
+        grid[idx] = c_input;
+        idx += 1;
+
+    } while (1);
+
+    // closing the grid file
+    fclose(grid_file);
+    idx = 0;
+
+    // reading the dictionary file
+    do {
+        c_input = fgetc(dictionary_file);
+        // indicates the end of file
+        if(feof(dictionary_file)) {
+            dictionary[idx] = '\0';
+            break;
+        }
+        dictionary[idx] = c_input;
+        idx += 1;
+    } while (1);
 
 
-  // closing the dictionary file
-  fclose(dictionary_file);
-  //////////////////////////End of reading////////////////////////
-  ///////////////You can add your code here!//////////////////////
+    // closing the dictionary file
+    fclose(dictionary_file);
+    //////////////////////////End of reading////////////////////////
+    ///////////////You can add your code here!//////////////////////
 
-  int dict_idx = 0;
-  int start_idx = 0;
+    int dict_idx = 0;
+    int start_idx = 0;
 
-  // storing the starting index of each word in the dictionary
-  idx = 0;
-  do {
-    c_input = dictionary[idx];
-    if(c_input == '\0') {
-      break;
-    }
-    if(c_input == '\n') {
-      dictionary_idx[dict_idx ++] = start_idx;
-      start_idx = idx + 1;
-    }
-    idx += 1;
-  } while (1);
+    // storing the starting index of each word in the dictionary
+    idx = 0;
+    do {
+        c_input = dictionary[idx];
+        if(c_input == '\0') {
+            break;
+        }
+        if(c_input == '\n') {
+            dictionary_idx[dict_idx ++] = start_idx;
+            start_idx = idx + 1;
+        }
+        idx += 1;
+    } while (1);
 
-  dict_num_words = dict_idx;
+    dict_num_words = dict_idx;
 
     no_of_rows = find_no_of_rows();
     no_of_chars_per_row = find_no_of_chars_per_row();
