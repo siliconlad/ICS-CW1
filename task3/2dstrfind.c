@@ -142,7 +142,7 @@ int find_no_of_rows()
 }
 
 //---------------------------------------------------------------------------
-// FIND_NO_OF_ROWS function
+// FIND_NO_OF_CHARS_PER_ROW function
 //---------------------------------------------------------------------------
 
 // Counts the number of characters in the first line of the grid
