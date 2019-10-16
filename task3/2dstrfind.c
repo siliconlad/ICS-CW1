@@ -59,6 +59,7 @@ int dictionary_idx[MAX_DICTIONARY_WORDS];
 // number of words in the dictionary
 int dict_num_words = 0;
 int no_of_rows = 0;
+int no_of_chars_per_row = 0;
 
 //---------------------------------------------------------------------------
 // PRINT_WORD function
@@ -114,6 +115,22 @@ void strfind()
         print_char('\n');
       }
     }
+//---------------------------------------------------------------------------
+// FIND_NO_OF_ROWS function
+//---------------------------------------------------------------------------
+
+// Counts the number of characters in the first line of the grid
+int find_no_of_rows()
+{
+    int i = 0;
+    int rows = 0;
+    while(grid[i++] != '\0') {
+        if (grid[i] == '\n') {
+            rows++;
+        }
+    }
+    return rows;
+}
 
     grid_idx++;
   }
@@ -217,6 +234,7 @@ int main (void)
 
   strfind();
     no_of_rows = find_no_of_rows();
+    no_of_chars_per_row = find_no_of_chars_per_row();
 
   return 0;
 }
