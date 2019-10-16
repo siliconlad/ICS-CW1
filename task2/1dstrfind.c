@@ -11,9 +11,9 @@
 // ==========================================================================
 // 1D String Finder
 // ==========================================================================
-// Finds the [first] matching word from dictionary in the grid
+// Finds the all matching word from dictionary in the grid
 
-// Inf2C-CS Coursework 1. Task 1-2
+// Inf2C-CS Coursework 1. Task 2
 // PROVIDED file, to be used as a skeleton.
 
 // Instructor: Boris Grot
@@ -90,22 +90,25 @@ void strfind()
   int idx = 0;
   int grid_idx = 0;
   char *word;
+  int found = 0;
   while (grid[grid_idx] != '\0') {
     for(idx = 0; idx < dict_num_words; idx ++) {
       word = dictionary + dictionary_idx[idx];
       if (contain(grid + grid_idx, word)) {
+        found = 1;
         print_int(grid_idx);
         print_char(' ');
         print_word(word);
         print_char('\n');
-        return;
+        //return;
       }
     }
 
     grid_idx++;
   }
-
-  print_string("-1\n");
+  if (!found) {
+    print_string("-1\n");
+  }
 }
 
 //---------------------------------------------------------------------------
