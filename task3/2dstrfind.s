@@ -36,9 +36,9 @@ dictionary_idx:         .space 4000
 dict_num_words:         .word 0
 end_of_string:          .asciiz     "\0"
 no_finds:               .asciiz     "-1\n"
-no_of_rows:             .space 4
-no_of_chars_per_row:    .space 4
-found:                  .space 4
+no_of_rows:             .word 0
+no_of_chars_per_row:    .word 0
+found:                  .word 0
 #=========================================================================
 # TEXT SEGMENT
 #=========================================================================
