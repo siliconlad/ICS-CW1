@@ -36,6 +36,7 @@ dictionary_idx:         .space 4000
 dict_num_words:         .word 0
 end_of_string:          .asciiz     "\0"
 no_finds:               .asciiz     "-1\n"
+no_of_rows:             .space 4
 #=========================================================================
 # TEXT SEGMENT
 #=========================================================================
@@ -283,6 +284,26 @@ strfind_end:
 strfind_return:
         jr  $ra                             # return to main
 
+#------------------------------------------------------------------
+# find_no_of_rows();
+#------------------------------------------------------------------
+
+find_no_of_rows:
+        la      $t0, grid                   # char *i = grid;
+        li      $t1, 0                      # int rows = 0;
+        li      $t2, 10                     # $t2 = '\n'
+
+        lb      $t3, 0($t0)                 # $t3 = grid[i]
+        addi    $t0, $t0, 1                 # i++;
+        beq     $t3, $zero, find_no_of_rows_end # if(grid[i] == 0){return rows;}
+
+        bne     $t3, $t2, find_no_of_rows   # if(grid[i] != '\n'){jump to find_no_of_rows}
+        addi    $t1, $t1, 1                 # rows++;
+        j       find_no_of_rows
+
+find_no_of_rows_end:
+        add     $v0, $t1, 0
+        jr      $ra                         # return rows;
 #------------------------------------------------------------------
 # Exit, DO NOT MODIFY THIS BLOCK
 #------------------------------------------------------------------
