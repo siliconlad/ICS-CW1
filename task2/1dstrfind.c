@@ -100,7 +100,6 @@ void strfind()
         print_char(' ');
         print_word(word);
         print_char('\n');
-        //return;
       }
     }
 
