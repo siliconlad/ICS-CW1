@@ -214,6 +214,7 @@ strfind:
         la      $s3, dictionary             # $s3 = dictionary
         li      $s4, 0                      # idx
         li      $s5, 0                      # grid_idx
+        li      $s6, 0                      # found = 0;
 
 str_while_loop:
         lb      $t1, 0($s1)                 # $t1 = grid[grid_idx]
@@ -258,11 +259,11 @@ str_for_loop:
 
         add     $ra, $s7, $0                # Restore original $ra
 
-        la      $a0, newline
+        li      $a0, 10
         li      $v0, 11
         syscall                             # print_char('\n');
 
-        jr      $ra                         # return;
+        li      $s6, 1                      # found = 1;
 
 str_for_loop_inc:
         addi    $s0, $s0, 4                 # &dictionary_idx[idx++] (int so by 4 bytes)
@@ -275,9 +276,13 @@ str_while_loop_inc:
         j       str_while_loop
 
 strfind_end:
+        bne     $s6, $zero, strfind_return  # if (!found)
+
         la      $a0, no_finds
         li      $v0, 4
         syscall                             # print_string("-1\n");
+
+strfind_return:
         jr  $ra                             # return to main
 
 #------------------------------------------------------------------
