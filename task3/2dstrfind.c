@@ -83,7 +83,7 @@ void print_word(char *word)
 int contain(char *string, char *word)
 {
     while (1) {
-        if (*string != *word || (*string == '\n' && *string == '\n')){
+        if (*string != *word || (*string == '\n' && *word == '\n')){
             return (*word == '\n');
         }
 
