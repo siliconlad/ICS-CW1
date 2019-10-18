@@ -309,8 +309,7 @@ str_for_loop:
 
         la      $t0, no_of_chars_per_row    # $t0 = &no_of_chars_per_row
         lw      $t0, 0($t0)                 # $t0 = no_of_chars_per_row
-        addi    $t0, $t0, 1                 # $t0 = no_of_chars_per_row + 1
-        mul     $t0, $t0, $s6               # $t0 = row * (no_of_chars_per_row + 1)
+        mul     $t0, $t0, $s6               # $t0 = row * no_of_chars_per_row
         add     $t0, $t0, $s1               # $t0 = $t0 + &grid[grid_idx]
 
         add     $a0, $t0, $0                # $a0 = &grid[grid_idx]
@@ -409,7 +408,6 @@ find_no_of_chars_per_row_loop:
 
         bne     $t3, $t2, find_no_of_chars_per_row_loop  # loop
 
-        addi    $t0, $t0, -1                # i -= 1
         add     $v0, $t0, $zero             # return i
         jr      $ra
 
