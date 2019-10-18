@@ -104,13 +104,15 @@ void strfind(int row)
     int grid_idx = 0;
     int idx = 0;
     char *word;
+    char *grid_position;
     // Every row is the same length, so we can use the first row
     while (grid[grid_idx] != '\n') {
         // for every char in grid, go through all words in dictionary
         for(idx = 0; idx < dict_num_words; idx ++) {
             word = dictionary + dictionary_idx[idx];
             // no_of_chars_per_row + 1 to accomodate the '\n' at the end of row
-            if (contain(grid + row*(no_of_chars_per_row+1) + grid_idx, word)) {
+            grid_position = grid + row*(no_of_chars_per_row+1) + grid_idx;
+            if (contain(grid_position, word)) {
                 found = 1;
                 print_int(row);
                 print_char(',');
