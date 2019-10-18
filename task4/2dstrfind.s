@@ -224,30 +224,35 @@ print_word_rtn:
         jr $ra
 
 #------------------------------------------------------------------
-# contain(char *string, char *word)
+# v_contain(char *string, char *word, int row)
 #------------------------------------------------------------------
-                                            # $a0 = string
-contain:                                    # $a1 = word
-        li      $t0, 10                     # $t0 = '\n'
-        lb      $t1, 0($a0)                 # $t1 = *string
-        lb      $t2, 0($a1)                 # $t2 = *word
+# INPUT:    $a0 = string | $a1 = word | $a2 = row |
+# OUTPUT:   $v0
+v_contain:
+        la      $t0, no_of_rows             # $t0 = &no_of_rows
+        lw      $t0, 0($t0)                 # $t0 = no_of_rows
 
-        sne     $t3, $t1, $t2               # set $t3=1 if *string != *word
-        seq     $t4, $t1, $t0               # set $t4=1 if *string == '\n'
-        seq     $t5, $t2, $t0               # set $t5=1 if *word == '\n'
-        and     $t4, $t4, $t5               # $t4 = $t4 && $t5
-        or      $t3, $t3, $t4               # $t3 = $t3 || $t4
+        la      $t1, no_of_chars_per_row;   # $t1 = &no_of_chars_per_row
+        lw      $t1, 0($t1)                 # $t1 = no_of_chars_per_row
 
-        beq     $t3, $zero, contain_inc
-                                            # else{
-        seq     $v0, $t2, $t0               #   return (word == '\n')
-        jr      $ra                         # }
+v_contain_loop:
+        bge     $a2, $t0, v_contain_return  # while(row < no_of_rows)
 
+        lb      $t2, 0($a0)                 # $t3 = *string
+        lb      $t3, 0($a1)                 # $t4 = *word
 
-contain_inc:
-        addi    $a0, $a0, 1                 # string++
-        addi    $a1, $a1, 1                 # word++
-        j       contain                     # while(1)
+        bne     $t2, $t3, v_contain_return  # if (*string != *word) {break;}
+
+        add     $a0, $a0, $t1               # string += no_of_chars_per_row;
+        addi    $a1, $a1, 1                 # word++;
+        addi    $a2, $a2, 1                 # row++;
+        j       v_contain_loop              #
+
+v_contain_return:
+        li      $t4, 10                     # $t4 = '\n'
+        seq     $v0, $t3, $t4               # $v0 = (*word == '\n')
+        jr      $ra                         # return $v0
+
 #------------------------------------------------------------------
 # h_contain(char *string, char *word)
 #------------------------------------------------------------------
