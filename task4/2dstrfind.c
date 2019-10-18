@@ -76,10 +76,35 @@ void print_word(char *word)
 }
 
 //---------------------------------------------------------------------------
+// V_CONTAIN function
+//---------------------------------------------------------------------------
+
+// function to see if the vertical string contains the (\n terminated) word
+int v_contain(char *string, char *word, int row)
+{
+    while (row < no_of_rows) {
+        if (*string != *word){
+            break;
+        }
+
+        string += no_of_chars_per_row;
+        row++;
+        word++;
+    }
+
+    return (*word == '\n');
+    // There are two cases for returns:
+    // 1. string and word differ by a char on the last row of the grid or before
+    // 2. string and word match for the entire column
+    //      1. Either word == '\n' and so returns true
+    //      2. The word isn't finished in which case word != '\n'
+}
+
+//---------------------------------------------------------------------------
 // H_CONTAIN function
 //---------------------------------------------------------------------------
 
-// function to see if the string contains the (\n terminated) word
+// function to see if the horitzontal string contains the (\n terminated) word
 int h_contain(char *string, char *word)
 {
     while (1) {
@@ -118,6 +143,18 @@ void strfind(int row)
                 print_int(grid_idx);
                 print_char(' ');
                 print_char('H');
+                print_char(' ');
+                print_word(word);
+                print_char('\n');
+            }
+
+            if (v_contain(grid_position, word, row)) {
+                found = 1;
+                print_int(row);
+                print_char(',');
+                print_int(grid_idx);
+                print_char(' ');
+                print_char('V');
                 print_char(' ');
                 print_word(word);
                 print_char('\n');
