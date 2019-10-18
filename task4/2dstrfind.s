@@ -248,6 +248,31 @@ contain_inc:
         addi    $a0, $a0, 1                 # string++
         addi    $a1, $a1, 1                 # word++
         j       contain                     # while(1)
+#------------------------------------------------------------------
+# h_contain(char *string, char *word)
+#------------------------------------------------------------------
+                                            # $a0 = string
+h_contain:                                  # $a1 = word
+        li      $t0, 10                     # $t0 = '\n'
+        lb      $t1, 0($a0)                 # $t1 = *string
+        lb      $t2, 0($a1)                 # $t2 = *word
+
+        sne     $t3, $t1, $t2               # set $t3=1 if *string != *word
+        seq     $t4, $t1, $t0               # set $t4=1 if *string == '\n'
+        seq     $t5, $t2, $t0               # set $t5=1 if *word == '\n'
+        and     $t4, $t4, $t5               # $t4 = $t4 && $t5
+        or      $t3, $t3, $t4               # $t3 = $t3 || $t4
+
+        beq     $t3, $zero, h_contain_inc
+                                            # else{
+        seq     $v0, $t2, $t0               #   return (word == '\n')
+        jr      $ra                         # }
+
+
+h_contain_inc:
+        addi    $a0, $a0, 1                 # string++
+        addi    $a1, $a1, 1                 # word++
+        j       h_contain                   # while(1)
 
 #------------------------------------------------------------------
 # strfind(int row);
@@ -264,7 +289,7 @@ strfind:                                    # $a0 = row
 
 str_while_loop:
         lb      $t1, 0($s1)                 # $t1 = grid[grid_idx]
-        li      $t4, 10                      # $t4 = '\n'
+        li      $t4, 10                     # $t4 = '\n'
         beq     $t1, $t4, strfind_return    # if(grid[grid_idx] == '\n') togo strfind_return
 
         # Reset idx to 0
@@ -290,11 +315,11 @@ str_for_loop:
 
         add     $a0, $t0, $0                # $a0 = &grid[grid_idx]
         add     $a1, $s2, $0                # $a1 = word
-        jal     contain                     # contain(&grid[grid_idx], word)
+        jal     h_contain                   # h_contain(&grid[grid_idx], word)
 
         add     $ra, $s7, $0                # Restore original $ra
 
-        beq     $v0, $0, str_for_loop_inc   # if contain returns false to go next iteration
+        beq     $v0, $0, str_for_loop_inc   # if h_contain returns false to go next iteration
 
         add     $a0, $s6, 0                 # Retrieve value of row from $s6
         li      $v0, 1                      #
