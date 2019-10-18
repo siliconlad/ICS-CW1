@@ -76,11 +76,11 @@ void print_word(char *word)
 }
 
 //---------------------------------------------------------------------------
-// CONTAIN function
+// H_CONTAIN function
 //---------------------------------------------------------------------------
 
 // function to see if the string contains the (\n terminated) word
-int contain(char *string, char *word)
+int h_contain(char *string, char *word)
 {
     while (1) {
         if (*string != *word || (*string == '\n' && *word == '\n')){
@@ -112,7 +112,7 @@ void strfind(int row)
             word = dictionary + dictionary_idx[idx];
             // no_of_chars_per_row + 1 to accomodate the '\n' at the end of row
             grid_position = grid + row*(no_of_chars_per_row+1) + grid_idx;
-            if (contain(grid_position, word)) {
+            if (h_contain(grid_position, word)) {
                 found = 1;
                 print_int(row);
                 print_char(',');
