@@ -13,7 +13,7 @@
 // ==========================================================================
 // Finds the matching words from dictionary in the 2D grid
 
-// Inf2C-CS Coursework 1. Task 3-5
+// Inf2C-CS Coursework 1. Task 4
 // PROVIDED file, to be used as a skeleton.
 
 // Instructor: Boris Grot
@@ -98,15 +98,18 @@ int contain(char *string, char *word)
 // STRFIND function
 //---------------------------------------------------------------------------
 
-// this functions finds all matches in the grid
+// Finds all dictionary words in the specified row of the grid
 void strfind(int row)
 {
-    int idx = 0;
     int grid_idx = 0;
+    int idx = 0;
     char *word;
+    // Every row is the same length, so we can use the first row
     while (grid[grid_idx] != '\n') {
+        // for every char in grid, go through all words in dictionary
         for(idx = 0; idx < dict_num_words; idx ++) {
             word = dictionary + dictionary_idx[idx];
+            // no_of_chars_per_row + 1 to accomodate the '\n' at the end of row
             if (contain(grid + row*(no_of_chars_per_row+1) + grid_idx, word)) {
                 found = 1;
                 print_int(row);
