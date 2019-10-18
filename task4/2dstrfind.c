@@ -110,8 +110,7 @@ void strfind(int row)
         // for every char in grid, go through all words in dictionary
         for(idx = 0; idx < dict_num_words; idx ++) {
             word = dictionary + dictionary_idx[idx];
-            // no_of_chars_per_row + 1 to accomodate the '\n' at the end of row
-            grid_position = grid + row*(no_of_chars_per_row+1) + grid_idx;
+            grid_position = grid + row*(no_of_chars_per_row) + grid_idx;
             if (h_contain(grid_position, word)) {
                 found = 1;
                 print_int(row);
@@ -150,12 +149,15 @@ int find_no_of_rows()
 // FIND_NO_OF_CHARS_PER_ROW function
 //---------------------------------------------------------------------------
 
-// Counts the number of characters in the first line of the grid
+// Counts the number of characters in the first line of the grid starting from
+// 1 and including the newline character.
+// This means adding i to the base address of the grid will return the first
+// element of the following row.
 int find_no_of_chars_per_row()
 {
     int i = 0;
     while(grid[i++] != '\n');
-    return i-1;
+    return i;
 }
 
 //---------------------------------------------------------------------------
