@@ -232,7 +232,7 @@ v_contain:
         la      $t0, no_of_rows             # $t0 = &no_of_rows
         lw      $t0, 0($t0)                 # $t0 = no_of_rows
 
-        la      $t1, no_of_chars_per_row;   # $t1 = &no_of_chars_per_row
+        la      $t1, no_of_chars_per_row    # $t1 = &no_of_chars_per_row
         lw      $t1, 0($t1)                 # $t1 = no_of_chars_per_row
 
 v_contain_loop:
@@ -324,7 +324,7 @@ str_if_one:
 
         add     $ra, $s7, $0                # Restore original $ra
 
-        beq     $v0, $0, str_if_two         # if (h_contain == false) togo next if statement 
+        beq     $v0, $0, str_if_two         # if (h_contain == false) togo next if statement
 
         add     $a0, $s6, 0                 # Retrieve value of row from $s6
         li      $v0, 1                      #
