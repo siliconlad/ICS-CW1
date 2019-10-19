@@ -238,8 +238,9 @@ d_contain:
 d_contain_loop:
         slt     $t5, $a2, $t0               # set $t5 = 1 if row < no_of_rows
         addi    $t6, $t1, -1                # $t6 = no_of_chars_per_row - 1
-        slt     $t7, $a3, $t1               # set $7 = 1 if grid_idx < no_of_chars_per_row - 1
-        and     $t6, $t6, $t7               #
+        slt     $t6, $a3, $t6               # set $t6 = 1 if grid_idx < no_of_chars_per_row - 1
+        and     $t5, $t5, $t6               # $t5 = $t5 && $t6
+        beq     $t5, $0, d_contain_return   #
 
         lb      $t2, 0($a0)                 # $t2 = *string
         lb      $t3, 0($a1)                 # $t3 = *word
