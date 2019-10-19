@@ -293,28 +293,31 @@ v_contain_return:
 #------------------------------------------------------------------
 # h_contain(char *string, char *word)
 #------------------------------------------------------------------
-                                            # $a0 = string
-h_contain:                                  # $a1 = word
+# INPUT:    $a0 = string | $a1 = word |
+# OUTPUT:   $v0
+h_contain:
         li      $t0, 10                     # $t0 = '\n'
-        lb      $t1, 0($a0)                 # $t1 = *string
-        lb      $t2, 0($a1)                 # $t2 = *word
+        la      $t1, no_of_chars_per_row    # $t1 = &no_of_chars_per_row
+        lw      $t1, 0($t1)                 # $t1 = no_of_chars_per_row
 
-        sne     $t3, $t1, $t2               # set $t3=1 if *string != *word
-        seq     $t4, $t1, $t0               # set $t4=1 if *string == '\n'
-        seq     $t5, $t2, $t0               # set $t5=1 if *word == '\n'
-        and     $t4, $t4, $t5               # $t4 = $t4 && $t5
-        or      $t3, $t3, $t4               # $t3 = $t3 || $t4
+h_contain_loop:
+        lb      $t2, 0($a0)                 # $t2 = *string
+        lb      $t3, 0($a1)                 # $t3 = *word
 
-        beq     $t3, $zero, h_contain_inc
-                                            # else{
-        seq     $v0, $t2, $t0               #   return (word == '\n')
+        bne     $t2, $t0, h_contain_comp    # if(*string == '\n') {
+        sub     $a0, $a0, $t1               #   string -= no_of_chars_per_row;
+        addi    $a0, $a0, 1                 #   string -= 1;}
+
+h_contain_comp:
+        lb      $t2, 0($a0)                 # $t2 = *string
+        beq     $t2, $t3, h_contain_inc     # if (*string != *word) {
+        seq     $v0, $t3, $t0               #   return (word == '\n');
         jr      $ra                         # }
-
 
 h_contain_inc:
         addi    $a0, $a0, 1                 # string++
         addi    $a1, $a1, 1                 # word++
-        j       h_contain                   # while(1)
+        j       h_contain_loop              # while(1)
 
 #------------------------------------------------------------------
 # strfind(int row);
