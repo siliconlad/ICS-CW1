@@ -224,6 +224,42 @@ print_word_rtn:
         jr $ra
 
 #------------------------------------------------------------------
+# d_contain(char *string, char *word, int row, int grid_idx)
+#------------------------------------------------------------------
+# INPUT:    $a0 = string | $a1 = word | $a2 = row | $a3 = grid_idx
+# OUTPUT:   $v0
+d_contain:
+        la      $t0, no_of_rows             # $t0 = &no_of_rows
+        lw      $t0, 0($t0)                 # $t0 = no_of_rows
+
+        la      $t1, no_of_chars_per_row    # $t1 = &no_of_chars_per_row
+        lw      $t1, 0($t1)                 # $t1 = no_of_chars_per_row
+
+d_contain_loop:
+        slt     $t5, $a2, $t0               # set $t5 = 1 if row < no_of_rows
+        addi    $t6, $t1, -1                # $t6 = no_of_chars_per_row - 1
+        slt     $t7, $a3, $t1               # set $7 = 1 if grid_idx < no_of_chars_per_row - 1
+        and     $t6, $t6, $t7               #
+
+        lb      $t2, 0($a0)                 # $t2 = *string
+        lb      $t3, 0($a1)                 # $t3 = *word
+
+        bne     $t2, $t3, d_contain_return  # if (*string != *word) {break;}
+
+        add     $a0, $a0, $t1               # string += no_of_chars_per_row;
+        addi    $a0, $a0, 1                 # string += 1;
+        addi    $a1, $a1, 1                 # word++;
+        addi    $a2, $a2, 1                 # row++;
+        addi    $a3, $a3, 1                 # grid_idx++;
+        j       d_contain_loop              #
+
+d_contain_return:
+        lb      $t3, 0($a1)                 # $t3 = *word
+        li      $t4, 10                     # $t4 = '\n'
+        seq     $v0, $t3, $t4               # $v0 = (*word == '\n')
+        jr      $ra                         # return $v0
+
+#------------------------------------------------------------------
 # v_contain(char *string, char *word, int row)
 #------------------------------------------------------------------
 # INPUT:    $a0 = string | $a1 = word | $a2 = row |
@@ -378,7 +414,7 @@ str_if_two:
 
         add     $ra, $s7, $0                # Restore original $ra
 
-        beq     $v0, $0, str_for_loop_inc   # if v_contain returns false to go next iteration
+        beq     $v0, $0, str_d_contain      # if v_contain returns false to go next iteration
 
         add     $a0, $s6, 0                 # Retrieve value of row from $s6
         li      $v0, 1                      #
@@ -396,9 +432,9 @@ str_if_two:
         li      $v0, 11                     #
         syscall                             # print_char(' ');
 
-        li      $a0, 86                     # $a0 = 'H'
+        li      $a0, 86                     # $a0 = 'V'
         li      $v0, 11                     #
-        syscall                             # print_char('H');
+        syscall                             # print_char('V');
 
         li      $a0, 32                     # ' ' = 32 in ascii
         li      $v0, 11                     #
@@ -416,6 +452,61 @@ str_if_two:
         la      $t0, found                  #
         li      $t1, 1                      #
         sw      $t1, 0($t0)                 # found = 1;
+
+str_d_contain:
+    la      $t0, no_of_chars_per_row    # $t0 = &no_of_chars_per_row
+    lw      $t0, 0($t0)                 # $t0 = no_of_chars_per_row
+    mul     $t0, $s6, $t0               # $t0 = row * no_of_chars_per_row
+    add     $t0, $t0, $s1               # $t0 = $t0 + &grid[grid_idx]
+
+    add     $s7, $ra, $0                # Save $ra
+
+    add     $a0, $t0, $0                # $a0 = $t0
+    add     $a1, $s2, $0                # $a1 = word
+    add     $a2, $s6, $0                # $a2 = row
+    add     $a3, $s5, $0                # $a3 = grid_idx
+    jal     d_contain                   # d_contain($t0, word, row, grid_idx)
+
+    add     $ra, $s7, $0                # Restore original $ra
+
+    beq     $v0, $0, str_for_loop_inc   # if d_contain returns false to go next iteration
+
+    add     $a0, $s6, 0                 # Retrieve value of row from $s6
+    li      $v0, 1                      #
+    syscall                             # print_int(row);
+
+    li      $a0, 44                     # $a0 = ','
+    li      $v0, 11                     # print_char(',')
+    syscall
+
+    add    $a0, $s5, $zero              # $a0 = grid_idx
+    li      $v0, 1                      #
+    syscall                             # print_int(grid_idx)
+
+    li      $a0, 32                     # ' ' = 32 in ascii
+    li      $v0, 11                     #
+    syscall                             # print_char(' ');
+
+    li      $a0, 68                     # $a0 = 'D'
+    li      $v0, 11                     #
+    syscall                             # print_char('D');
+
+    li      $a0, 32                     # ' ' = 32 in ascii
+    li      $v0, 11                     #
+    syscall                             # print_char(' ');
+
+    add     $s7, $ra, $0                # Save $ra
+    add     $a1, $s2, $0                # $a1 = word
+    jal     print_word                  # print_word(word);
+    add     $ra, $s7, $0                # Restore original $ra
+
+    li      $a0, 10                     # $a0 = '\n'
+    li      $v0, 11                     #
+    syscall                             # print_char('\n');
+
+    la      $t0, found                  #
+    li      $t1, 1                      #
+    sw      $t1, 0($t0)                 # found = 1;
 
 str_for_loop_inc:
         addi    $s0, $s0, 4                 # &dictionary_idx[idx++] (int so by 4 bytes)
