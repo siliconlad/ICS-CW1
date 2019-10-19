@@ -351,7 +351,7 @@ str_for_loop:
         mul     $t0, $s6, $t0               # $t0 = row * no_of_chars_per_row
         add     $t0, $t0, $s1               # $t0 = $t0 + &grid[grid_idx]
 
-str_if_one:
+str_h_contain:
         add     $s7, $ra, $0                # Save $ra
 
         add     $a0, $t0, $0                # $a0 = $t0
@@ -360,7 +360,7 @@ str_if_one:
 
         add     $ra, $s7, $0                # Restore original $ra
 
-        beq     $v0, $0, str_if_two         # if (h_contain == false) togo next if statement
+        beq     $v0, $0, str_v_contain         # if (h_contain == false) togo next if statement
 
         add     $a0, $s6, 0                 # Retrieve value of row from $s6
         li      $v0, 1                      #
@@ -399,7 +399,7 @@ str_if_one:
         li      $t1, 1                      #
         sw      $t1, 0($t0)                 # found = 1;
 
-str_if_two:
+str_v_contain:
         la      $t0, no_of_chars_per_row    # $t0 = &no_of_chars_per_row
         lw      $t0, 0($t0)                 # $t0 = no_of_chars_per_row
         mul     $t0, $s6, $t0               # $t0 = row * no_of_chars_per_row
@@ -414,7 +414,7 @@ str_if_two:
 
         add     $ra, $s7, $0                # Restore original $ra
 
-        beq     $v0, $0, str_d_contain      # if v_contain returns false to go next iteration
+        beq     $v0, $0, str_d_contain      # if v_contain returns false to go next if statement
 
         add     $a0, $s6, 0                 # Retrieve value of row from $s6
         li      $v0, 1                      #
