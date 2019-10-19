@@ -138,7 +138,7 @@ int v_contain(char *string, char *word, int row)
 {
     while (1) {
         if (row >= no_of_rows) {
-            string -= (no_of_chars_per_row ) * (no_of_rows);
+            string -= no_of_chars_per_row * no_of_rows;
             row = 0;
         }
 
