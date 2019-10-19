@@ -150,7 +150,14 @@ int v_contain(char *string, char *word, int row)
 int h_contain(char *string, char *word)
 {
     while (1) {
-        if (*string != *word || (*string == '\n' && *word == '\n')){
+        if (*string == '\n')
+        {
+            string -= (no_of_chars_per_row - 1);
+        }
+        // *string will never equal '\n' here so when *word == '\n' then
+        // *string and *word are guaranteed to be different
+        if (*string != *word)
+        {
             return (*word == '\n');
         }
 
