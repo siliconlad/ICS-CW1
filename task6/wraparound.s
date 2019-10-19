@@ -272,12 +272,16 @@ v_contain:
         lw      $t1, 0($t1)                 # $t1 = no_of_chars_per_row
 
 v_contain_loop:
-        bge     $a2, $t0, v_contain_return  # while(row < no_of_rows)
+        blt     $a2, $t0, v_contain_comp    # if(row >= no_of_rows) {
+        mul     $t2, $t1, $t0               #   $t2 = no_of_chars_per_row * no_of_rows;
+        sub     $a0, $a0, $t2               #   string -= $t2;
+        li      $a2, 0                      #   row = 0;}
 
+v_contain_comp:
         lb      $t2, 0($a0)                 # $t2 = *string
         lb      $t3, 0($a1)                 # $t3 = *word
-
-        bne     $t2, $t3, v_contain_return  # if (*string != *word) {break;}
+        
+        bne     $t2, $t3, v_contain_return  # if (*string != *word) {return}
 
         add     $a0, $a0, $t1               # string += no_of_chars_per_row;
         addi    $a1, $a1, 1                 # word++;
@@ -285,7 +289,6 @@ v_contain_loop:
         j       v_contain_loop              #
 
 v_contain_return:
-        lb      $t3, 0($a1)                 # $t3 = *word
         li      $t4, 10                     # $t4 = '\n'
         seq     $v0, $t3, $t4               # $v0 = (*word == '\n')
         jr      $ra                         # return $v0
