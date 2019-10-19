@@ -236,18 +236,18 @@ d_contain:
         lw      $t1, 0($t1)                 # $t1 = no_of_chars_per_row
 
 d_contain_loop:
-        sge     $t5, $a2, $t0               # set $t5 = 1 if row >= no_of_rows
-        addi    $t6, $t1, -1                # $t6 = no_of_chars_per_row - 1
-        sge     $t6, $a3, $t6               # set $t6 = 1 if grid_idx >= no_of_chars_per_row - 1
-        or      $t5, $t5, $t6               # $t5 = $t5 || $t6
+        sge     $t2, $a2, $t0               # set $t2 = 1 if row >= no_of_rows
+        addi    $t3, $t1, -1                # $t3 = no_of_chars_per_row - 1
+        sge     $t3, $a3, $t3               # set $t3 = 1 if grid_idx >= no_of_chars_per_row - 1
+        or      $t2, $t2, $t3               # $t2 = $t2 || $t3
 
-        beq     $t5, $0, d_contain_comp     # if($t5 || $t6)
+        beq     $t2, $0, d_contain_comp     # if($t2 || $t3)
                                             # {
 d_contain_loop_wrap:                        #
-        sgt     $t4, $a2, $0                #   set $t4 = 1 if row > 0
-        sgt     $t5, $a3, $0                #   set $t5 = 1 if grid_idx > 0
-        and     $t4, $t4, $t5               #   $t4 = $t4 && $t5
-        beq     $t4, $0, d_contain_comp     #   while($t4 && $t5)
+        sgt     $t2, $a2, $0                #   set $t2 = 1 if row > 0
+        sgt     $t3, $a3, $0                #   set $t3 = 1 if grid_idx > 0
+        and     $t2, $t2, $t3               #   $t2 = $t2 && $t3
+        beq     $t2, $0, d_contain_comp     #   while($t2 && $t3)
                                             #   {
         sub     $a0, $a0, $t1               #       string -= no_of_chars_per_row
         addi    $a0, $a0, -1                #       string += 1;
