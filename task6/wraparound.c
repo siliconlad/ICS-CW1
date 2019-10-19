@@ -98,8 +98,20 @@ void print_match(int row, int grid_idx, char orientation, char *word)
 // function to see if the diagonal string contains the (\n terminated) word
 int d_contain(char *string, char *word, int row, int grid_idx)
 {
-    while (row < no_of_rows && grid_idx < no_of_chars_per_row - 1) {
-        if (*string != *word){
+    while (1)
+    {
+        // wrap around
+        if (row >= no_of_rows || grid_idx >= no_of_chars_per_row - 1)
+        {
+            while (row > 0 && grid_idx > 0) {
+                string -= no_of_chars_per_row + 1;
+                row--;
+                grid_idx--;
+            }
+        }
+
+        if (*string != *word)
+        {
             break;
         }
 
