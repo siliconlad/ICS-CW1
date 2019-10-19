@@ -112,7 +112,7 @@ int d_contain(char *string, char *word, int row, int grid_idx)
 
         if (*string != *word)
         {
-            break;
+            return (*word == '\n');
         }
 
         string += no_of_chars_per_row + 1;
@@ -121,7 +121,7 @@ int d_contain(char *string, char *word, int row, int grid_idx)
         grid_idx++;
     }
 
-    return (*word == '\n');
+    return 0;
     // There are two cases for returns:
     // 1. string and word differ by a char on the last row of the grid or before
     // 2. string and word match for the entire column
