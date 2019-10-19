@@ -249,6 +249,7 @@ v_contain_loop:
         j       v_contain_loop              #
 
 v_contain_return:
+        lb      $t3, 0($a1)                 # $t3 = *word
         li      $t4, 10                     # $t4 = '\n'
         seq     $v0, $t3, $t4               # $v0 = (*word == '\n')
         jr      $ra                         # return $v0
