@@ -90,6 +90,33 @@ void print_match(int row, int grid_idx, char orientation, char *word)
     print_word(word);
     print_char('\n');
 }
+
+//---------------------------------------------------------------------------
+// D_CONTAIN function
+//---------------------------------------------------------------------------
+
+// function to see if the diagonal string contains the (\n terminated) word
+int d_contain(char *string, char *word, int row, int grid_idx)
+{
+    while (row < no_of_rows && grid_idx < no_of_chars_per_row - 1) {
+        if (*string != *word){
+            break;
+        }
+
+        string += no_of_chars_per_row + 1;
+        row++;
+        word++;
+        grid_idx++;
+    }
+
+    return (*word == '\n');
+    // There are two cases for returns:
+    // 1. string and word differ by a char on the last row of the grid or before
+    // 2. string and word match for the entire column
+    //      1. Either word == '\n' and so returns true
+    //      2. The word isn't finished in which case word != '\n'
+}
+
 //---------------------------------------------------------------------------
 // V_CONTAIN function
 //---------------------------------------------------------------------------
@@ -160,6 +187,10 @@ void strfind(int row)
                 found = 1;
                 print_match(row, grid_idx, 'V', word);
             }
+
+            if (d_contain(grid_position, word, row, grid_idx)) {
+                found = 1;
+                print_match(row, grid_idx, 'D', word);
             }
         }
 
