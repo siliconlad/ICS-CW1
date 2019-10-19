@@ -76,6 +76,21 @@ void print_word(char *word)
 }
 
 //---------------------------------------------------------------------------
+// PRINT_MATCH function
+//---------------------------------------------------------------------------
+
+void print_match(int row, int grid_idx, char orientation, char *word)
+{
+    print_int(row);
+    print_char(',');
+    print_int(grid_idx);
+    print_char(' ');
+    print_char(orientation);
+    print_char(' ');
+    print_word(word);
+    print_char('\n');
+}
+//---------------------------------------------------------------------------
 // V_CONTAIN function
 //---------------------------------------------------------------------------
 
@@ -138,26 +153,13 @@ void strfind(int row)
             grid_position = grid + row*(no_of_chars_per_row) + grid_idx;
             if (h_contain(grid_position, word)) {
                 found = 1;
-                print_int(row);
-                print_char(',');
-                print_int(grid_idx);
-                print_char(' ');
-                print_char('H');
-                print_char(' ');
-                print_word(word);
-                print_char('\n');
+                print_match(row, grid_idx, 'H', word);
             }
 
             if (v_contain(grid_position, word, row)) {
                 found = 1;
-                print_int(row);
-                print_char(',');
-                print_int(grid_idx);
-                print_char(' ');
-                print_char('V');
-                print_char(' ');
-                print_word(word);
-                print_char('\n');
+                print_match(row, grid_idx, 'V', word);
+            }
             }
         }
 
