@@ -124,9 +124,14 @@ int d_contain(char *string, char *word, int row, int grid_idx)
 // function to see if the vertical string contains the (\n terminated) word
 int v_contain(char *string, char *word, int row)
 {
-    while (row < no_of_rows) {
+    while (1) {
+        if (row >= no_of_rows) {
+            string -= (no_of_chars_per_row ) * (no_of_rows);
+            row = 0;
+        }
+
         if (*string != *word){
-            break;
+            return (*word == '\n');
         }
 
         string += no_of_chars_per_row;
@@ -134,7 +139,7 @@ int v_contain(char *string, char *word, int row)
         word++;
     }
 
-    return (*word == '\n');
+    return 0;
     // There are two cases for returns:
     // 1. string and word differ by a char on the last row of the grid or before
     // 2. string and word match for the entire column
