@@ -236,25 +236,39 @@ d_contain:
         lw      $t1, 0($t1)                 # $t1 = no_of_chars_per_row
 
 d_contain_loop:
-        slt     $t5, $a2, $t0               # set $t5 = 1 if row < no_of_rows
+        sge     $t5, $a2, $t0               # set $t5 = 1 if row >= no_of_rows
         addi    $t6, $t1, -1                # $t6 = no_of_chars_per_row - 1
-        slt     $t7, $a3, $t1               # set $7 = 1 if grid_idx < no_of_chars_per_row - 1
-        and     $t6, $t6, $t7               #
+        sge     $t6, $a3, $t6               # set $t6 = 1 if grid_idx >= no_of_chars_per_row - 1
+        or      $t5, $t5, $t6               # $t5 = $t5 || $t6
 
+        beq     $t5, $0, d_contain_comp     # if($t5 || $t6)
+                                            # {
+d_contain_loop_wrap:                        #
+        sgt     $t4, $a2, $0                #   set $t4 = 1 if row > 0
+        sgt     $t5, $a3, $0                #   set $t5 = 1 if grid_idx > 0
+        and     $t4, $t4, $t5               #   $t4 = $t4 && $t5
+        beq     $t4, $0, d_contain_comp     #   while($t4 && $t5)
+                                            #   {
+        sub     $a0, $a0, $t1               #       string -= no_of_chars_per_row
+        addi    $a0, $a0, -1                #       string += 1;
+        addi    $a2, $a2, -1                #       row--;
+        addi    $a3, $a3, -1                #       grid_idx--;
+        j       d_contain_loop_wrap         #   }
+                                            # }
+d_contain_comp:
         lb      $t2, 0($a0)                 # $t2 = *string
         lb      $t3, 0($a1)                 # $t3 = *word
 
-        bne     $t2, $t3, d_contain_return  # if (*string != *word) {break;}
+        bne     $t2, $t3, d_contain_return  # if (*string != *word) {return}
 
         add     $a0, $a0, $t1               # string += no_of_chars_per_row;
         addi    $a0, $a0, 1                 # string += 1;
-        addi    $a1, $a1, 1                 # word++;
         addi    $a2, $a2, 1                 # row++;
+        addi    $a1, $a1, 1                 # word++;
         addi    $a3, $a3, 1                 # grid_idx++;
         j       d_contain_loop              #
 
 d_contain_return:
-        lb      $t3, 0($a1)                 # $t3 = *word
         li      $t4, 10                     # $t4 = '\n'
         seq     $v0, $t3, $t4               # $v0 = (*word == '\n')
         jr      $ra                         # return $v0
@@ -280,7 +294,7 @@ v_contain_loop:
 v_contain_comp:
         lb      $t2, 0($a0)                 # $t2 = *string
         lb      $t3, 0($a1)                 # $t3 = *word
-        
+
         bne     $t2, $t3, v_contain_return  # if (*string != *word) {return}
 
         add     $a0, $a0, $t1               # string += no_of_chars_per_row;
