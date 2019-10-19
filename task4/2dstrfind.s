@@ -238,8 +238,8 @@ v_contain:
 v_contain_loop:
         bge     $a2, $t0, v_contain_return  # while(row < no_of_rows)
 
-        lb      $t2, 0($a0)                 # $t3 = *string
-        lb      $t3, 0($a1)                 # $t4 = *word
+        lb      $t2, 0($a0)                 # $t2 = *string
+        lb      $t3, 0($a1)                 # $t3 = *word
 
         bne     $t2, $t3, v_contain_return  # if (*string != *word) {break;}
 
@@ -288,7 +288,7 @@ strfind:                                    # $a0 = row
         la      $s0, dictionary_idx         # &dictionary_idx[idx];
         la      $s1, grid                   # &grid[grid_idx];
         li      $s2, 0                      # word = 0;
-        la      $s3, dictionary             # $s3 = dictionary
+        la      $s3, dictionary             # $s3 = &dictionary
         li      $s4, 0                      # idx
         li      $s5, 0                      # grid_idx
         add     $s6, $a0, $zero             # This is so that we don't lose the value of $a0 after we call other functions multiple times.
@@ -303,17 +303,16 @@ str_while_loop:
         la      $s0, dictionary_idx         # &dictionary_idx[idx];
 
 str_for_loop:
-        la      $t4, dict_num_words
-        lw      $t3, 0($t4)                 # *dict_num_words
+        la      $t4, dict_num_words         # $t4 = &dict_num_words
+        lw      $t3, 0($t4)                 # $t3 = dict_num_words
         bge     $s4, $t3, str_while_loop_inc# if(idx >= dict_num_words)
 
-        lw      $t2, 0($s0)                 # dictionary_idx[idx];
-
+        lw      $t2, 0($s0)                 # $t2 = dictionary_idx[idx];
         add     $s2, $s3, $t2               # word = dictionary + dictionary_idx[idx];
 
         la      $t0, no_of_chars_per_row    # $t0 = &no_of_chars_per_row
         lw      $t0, 0($t0)                 # $t0 = no_of_chars_per_row
-        mul     $t0, $t0, $s6               # $t0 = row * no_of_chars_per_row
+        mul     $t0, $s6, $t0               # $t0 = row * no_of_chars_per_row
         add     $t0, $t0, $s1               # $t0 = $t0 + &grid[grid_idx]
 
 str_if_one:
@@ -335,7 +334,7 @@ str_if_one:
         li      $v0, 11                     # print_char(',')
         syscall
 
-        add    $a0, $s5, $zero              # $a0 = grid_idx
+        add     $a0, $s5, $zero             # $a0 = grid_idx
         li      $v0, 1                      #
         syscall                             # print_int(grid_idx)
 
@@ -365,16 +364,21 @@ str_if_one:
         sw      $t1, 0($t0)                 # found = 1;
 
 str_if_two:
+        la      $t0, no_of_chars_per_row    # $t0 = &no_of_chars_per_row
+        lw      $t0, 0($t0)                 # $t0 = no_of_chars_per_row
+        mul     $t0, $s6, $t0               # $t0 = row * no_of_chars_per_row
+        add     $t0, $t0, $s1               # $t0 = $t0 + &grid[grid_idx]
+
         add     $s7, $ra, $0                # Save $ra
 
         add     $a0, $t0, $0                # $a0 = $t0
         add     $a1, $s2, $0                # $a1 = word
-        add     $a2, $a0, $0                # $a2 = row
+        add     $a2, $s6, $0                # $a2 = row
         jal     v_contain                   # v_contain($t0, word, row)
 
         add     $ra, $s7, $0                # Restore original $ra
 
-        beq     $v0, $0, str_for_loop_inc   # if h_contain returns false to go next iteration
+        beq     $v0, $0, str_for_loop_inc   # if v_contain returns false to go next iteration
 
         add     $a0, $s6, 0                 # Retrieve value of row from $s6
         li      $v0, 1                      #
@@ -464,8 +468,8 @@ find_no_of_chars_per_row_loop:
 
         bne     $t3, $t2, find_no_of_chars_per_row_loop  # loop
 
-        add     $v0, $t0, $zero             # return i
-        jr      $ra
+        add     $v0, $t0, $zero             # $v0 = i
+        jr      $ra                         # return $v0
 
 #------------------------------------------------------------------
 # Exit, DO NOT MODIFY THIS BLOCK
