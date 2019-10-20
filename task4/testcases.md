@@ -312,3 +312,68 @@ asabcdefghi
 ## Expected Output
 1,1 H seasonings
 1,1 V seasonings
+
+# Case 12
+Make sure program matches vertical words on the last column
+## Dictionary
+area
+eden
+this
+happen
+less
+not
+have
+first
+nothing
+thing
+ear
+reason
+seasonings
+## 2D Grid
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaseasonings
+aaaaaaaaaaaaaaaaaaaaaeabcdefghe
+aaaaaaaaaaaaaaaaaaaaaaabcdefgha
+aaaaaaaaaaaaaaaaaaaaasabcdefghs
+aaaaaaaaaaaaaaaaaaaaaoabcdefgho
+aaaaaaaaaaaaaaaaaaaaanabcdefghn
+aaaaaaaaaaaaaaaaaaaaaiabcdefghi
+aaaaaaaaaaaaaaaaaaaaanabcdefghn
+aaaaaaaaaaaaaaaaaaaaagabcdefghg
+aaaaaaaaaaaaaaaaaaaaasabcdefghs
+## Expected Output
+1,21 H seasonings
+1,21 V seasonings
+1,30 V seasonings
+
+# Case 12
+Make sure program matches vertical words on the last column
+## Dictionary
+area
+eden
+this
+happen
+less
+not
+have
+first
+nothing
+thing
+ear
+reason
+seasonings
+## 2D Grid
+aaaaaaaaaaaaaaaaaaaaaseasonings
+aaaaaaaaaaaaaaaaaaaaaeabcdefghe
+aaaaaaaaaaaaaaaaaaaaaaabcdefgha
+aaaaaaaaaaaaaaaaaaaaasabcdefghs
+aaaaaaaaaaaaaaaaaaaaaoabcdefgho
+aaaaaaaaaaaaaaaaaaaaanabcdefghn
+aaaaaaaaaaaaaaaaaaaaaiabcdefghi
+aaaaaaaaaaaaaaaaaaaaanabcdefghn
+aaaaaaaaaaaaaaaaaaaaagabcdefghg
+aaaaaaaaaaaaaaaaaaaaasabcdefghs
+## Expected Output
+0,21 H seasonings
+0,21 V seasonings
+0,30 V seasonings
