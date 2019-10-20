@@ -200,3 +200,25 @@ aaaaaaaaaaaaaaaaaaaaaas
 4,22 H s
 4,22 V s
 4,22 D s
+
+# Case 7
+Make sure program works when there are no matches
+## Dictionary
+area
+eden
+this
+happen
+less
+not
+have
+first
+nothing
+thing
+ear
+reason
+seasoning
+s
+## 2D Grid
+a
+## Expected Output
+-1
