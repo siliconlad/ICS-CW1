@@ -352,10 +352,7 @@ seasonings
 ## 2D Grid
 a
 ## Expected Output
-0,0 V area
-10,0 V not
-10,0 V nothing
-12,0 V thing
+-1
 
 # Case 11
 Check that program works correctly
