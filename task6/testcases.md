@@ -332,3 +332,42 @@ g
 10,0 V not
 10,0 V nothing
 12,0 V thing
+
+# Case 11
+Check that program works correctly when no matches are found
+## Dictionary
+area
+eden
+this
+happen
+less
+not
+have
+first
+nothing
+thing
+ear
+reason
+seasonings
+## 2D Grid
+a
+## Expected Output
+0,0 V area
+10,0 V not
+10,0 V nothing
+12,0 V thing
+
+# Case 11
+Check that program works correctly
+## Dictionary
+a
+aa
+## 2D Grid
+a
+## Expected Output
+0,0 H a
+0,0 V a
+0,0 D a
+0,0 H aa
+0,0 V aa
+0,0 D aa
