@@ -316,7 +316,8 @@ int main (void)
     no_of_rows = find_no_of_rows();
     no_of_chars_per_row = find_no_of_chars_per_row();
 
-    for (int i = 0; i < no_of_rows; i++) {
+    int i = 0;
+    for (i = 0; i < no_of_rows; i++) {
       strfind(i);
     }
 
