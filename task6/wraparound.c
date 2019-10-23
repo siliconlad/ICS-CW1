@@ -231,10 +231,11 @@ int find_no_of_rows()
 {
     int i = 0;
     int rows = 0;
-    while(grid[i++] != '\0') {
+    while(grid[i] != '\0') {
         if (grid[i] == '\n') {
             rows++;
         }
+        i++;
     }
     return rows;
 }
